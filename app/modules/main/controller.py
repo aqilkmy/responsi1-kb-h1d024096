@@ -1,7 +1,7 @@
 class MainController:
     def index(self):
         return {
-            "title": "Asisten Pertanian",
+            "title": "Asisten Pertanian Cerdas",
             "subtitle": "Sistem irigasi fuzzy dan sistem pakar diagnosis tanaman pangan",
         }
 
