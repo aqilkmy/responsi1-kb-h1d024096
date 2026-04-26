@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Hasil Analisis</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--bg: #f3efe4;
+			--ink: #132228;
+			--card: #fff;
+			--line: #d7d4c7;
+			--accent: #14694d;
+			--accent-2: #ca7d03;
+			--muted: #56676b;
+		}
+
+		body {
+			margin: 0;
+			font-family: "Space Grotesk", sans-serif;
+			color: var(--ink);
+			background:
+				radial-gradient(circle at 85% 10%, #ffe4ac 0, #ffe4ac 14%, transparent 16%),
+				linear-gradient(135deg, #f4efe1, #eef5ef 60%, #eaf3f5);
+			min-height: 100vh;
+			padding: 20px 14px;
+		}
+
+		.container {
+			max-width: 880px;
+			margin: auto;
+			background: var(--card);
+			border: 1px solid var(--line);
+			border-radius: 20px;
+			box-shadow: 0 16px 28px rgba(14, 28, 35, 0.09);
+			padding: 22px;
+		}
+
+		h1 {
+			margin: 0 0 12px;
+			font-family: "Merriweather", serif;
+			font-size: clamp(1.3rem, 2.6vw, 2rem);
+		}
+
+		.block {
+			border: 1px solid #dde2db;
+			border-radius: 14px;
+			padding: 14px;
+			background: #fbfdf9;
+			margin-bottom: 12px;
+		}
+
+		.k { color: var(--muted); }
+
+		.pill {
+			display: inline-block;
+			padding: 5px 10px;
+			border-radius: 999px;
+			font-size: 0.85rem;
+			color: #fff;
+			background: linear-gradient(100deg, var(--accent), #2b9372);
+		}
+
+		.warn { background: linear-gradient(100deg, #a26203, var(--accent-2)); }
+
+		ul { padding-left: 18px; }
+
+		.actions {
+			margin-top: 18px;
+			display: flex;
+			gap: 10px;
+			flex-wrap: wrap;
+		}
+
+		.btn {
+			text-decoration: none;
+			padding: 10px 14px;
+			border-radius: 10px;
+			border: 1px solid #cad5ce;
+			color: var(--ink);
+			font-weight: 600;
+			background: #fff;
+		}
+	</style>
+</head>
+<body>
+	<main class="container">
+		<h1>Hasil Analisis</h1>
+
+		{% if mode == 'fuzzy' %}
+			<div class="block">
+				<span class="pill">Irigasi Cerdas (Fuzzy)</span>
+				<p><span class="k">Kelembapan tanah:</span> {{ result.inputs.soil_moisture }}%</p>
+				<p><span class="k">Suhu udara:</span> {{ result.inputs.temperature }} derajat C</p>
+				<p><span class="k">Kelembapan udara:</span> {{ result.inputs.humidity }}%</p>
+				<p><span class="k">Peluang hujan:</span> {{ result.inputs.rain_chance }}%</p>
+			</div>
+			<div class="block">
+				<p><strong>Durasi rekomendasi penyiraman: {{ result.duration_minutes }} menit</strong></p>
+				<p>Tindakan sistem: <strong>{{ result.action }}</strong></p>
+			</div>
+		{% elif mode == 'expert' %}
+			<div class="block">
+				<span class="pill warn">Sistem Pakar Diagnosa</span>
+				<p><span class="k">Gejala terpilih:</span></p>
+				{% if result.selected_symptoms %}
+					<ul>
+						{% for symptom in result.selected_symptoms %}
+							<li>{{ symptom }}</li>
+						{% endfor %}
+					</ul>
+				{% else %}
+					<p>Tidak ada gejala dipilih.</p>
+				{% endif %}
+			</div>
+
+			{% if result.primary_diagnosis %}
+				<div class="block">
+					<p><strong>Diagnosa utama: {{ result.primary_diagnosis.name }}</strong></p>
+					<p>Kategori: {{ result.primary_diagnosis.category }}</p>
+					<p>Tingkat keyakinan: {{ result.primary_diagnosis.confidence }}%</p>
+					<p>Saran: {{ result.primary_diagnosis.advice }}</p>
+				</div>
+			{% else %}
+				<div class="block">
+					<p><strong>Belum ada diagnosa utama yang cukup kuat.</strong></p>
+					<p>Pilih gejala lebih lengkap agar inferensi lebih akurat.</p>
+				</div>
+			{% endif %}
+
+			{% if result.all_possibilities %}
+				<div class="block">
+					<p><strong>Kemungkinan lain:</strong></p>
+					<ul>
+						{% for item in result.all_possibilities %}
+							<li>{{ item.name }} ({{ item.confidence }}%)</li>
+						{% endfor %}
+					</ul>
+				</div>
+			{% endif %}
+		{% endif %}
+
+		<div class="actions">
+			<a class="btn" href="/">Kembali ke Beranda</a>
+		</div>
+	</main>
+</body>
+</html>
