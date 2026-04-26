@@ -11,8 +11,12 @@ def initialize_route(app: Flask):
 
 def initialize_db(app: Flask):
     with app.app_context():
-        db.init_app(app)
-        db.create_all()
+        try:
+            db.init_app(app)
+            db.create_all()
+        except Exception as e:
+            print(f"Warning: Could not initialize database: {e}")
+            pass
 
 def initialize_swagger(app: Flask):
     with app.app_context():

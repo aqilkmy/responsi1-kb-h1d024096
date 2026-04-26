@@ -19,7 +19,7 @@ class TestingConfig(BaseConfig):
 class ProductionConfig(BaseConfig):
     """Production configuration."""
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///production.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
 
 
 def get_config_by_name(config_name):
